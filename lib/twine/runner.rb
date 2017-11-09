@@ -9,7 +9,7 @@ module Twine
       options = CLI.parse(args)
 
       return unless options
-      
+
       twine_file = TwineFile.new
       twine_file.read options[:twine_file]
       runner = new(options, twine_file)
@@ -74,7 +74,7 @@ module Twine
       else
         formatter = find_formatter { |f| f.can_handle_directory?(@options[:output_path]) }
       end
-      
+
       unless formatter
         raise Twine::Error.new "Could not determine format given the contents of #{@options[:output_path]}"
       end
@@ -128,7 +128,7 @@ module Twine
 
     def generate_localization_archive
       validate_twine_file if @options[:validate]
-      
+
       require_rubyzip
 
       if File.file?(@options[:output_path])
@@ -151,7 +151,7 @@ module Twine
                 Twine::stderr.puts "Skipping file #{file_name} since it would not contain any translations."
                 next
               end
-              
+
               IO.write(temp_path, output, encoding: output_encoding)
               zipfile.add(zip_path, temp_path)
             end
@@ -224,7 +224,7 @@ module Twine
       duplicate_keys = Set.new
       keys_without_tags = Set.new
       invalid_keys = Set.new
-      valid_key_regex = /^[A-Za-z0-9_]+$/
+      valid_key_regex = /^[A-Za-z0-9_\-\.]+$/
 
       @twine_file.sections.each do |section|
         section.definitions.each do |definition|
@@ -320,10 +320,10 @@ module Twine
       else
         formatter = find_formatter { |f| f.extension == File.extname(path) }
       end
-      
+
       unless formatter
         raise Twine::Error.new "Unable to determine format of #{path}"
-      end      
+      end
 
       lang = lang || determine_language_given_path(path) || formatter.determine_language_given_path(path)
       unless lang
