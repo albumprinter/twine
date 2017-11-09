@@ -71,7 +71,7 @@ class TestAbstractFormatter < TwineTest
       formatter.options = { consume_all: true }
       formatter.set_translation_for_key 'new-key', 'en', 'new-key-english'
 
-      assert_equal 'Uncategorized', @twine_file.sections[0].name 
+      assert_equal '~Uncategorized', @twine_file.sections[0].name 
       assert_equal 'new-key', @twine_file.sections[0].definitions[0].key
     end
   end
@@ -151,7 +151,7 @@ class TestAbstractFormatter < TwineTest
 
     def test_set_comment_does_not_add_unchanged_comment
       @formatter.set_comment_for_key 'key', 'reference comment'
-      
+
       assert_nil @twine_file.definitions_by_key['key'].raw_comment
     end
 

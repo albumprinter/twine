@@ -39,18 +39,18 @@ module Twine
           end
         elsif @options[:consume_all]
           Twine::stderr.puts "Adding new definition '#{key}' to twine file."
-          current_section = @twine_file.sections.find { |s| s.name == 'Uncategorized' }
+          current_section = @twine_file.sections.find { |s| s.name == '~Uncategorized' }
           unless current_section
-            current_section = TwineSection.new('Uncategorized')
+            current_section = TwineSection.new('~Uncategorized')
             @twine_file.sections.insert(0, current_section)
           end
           current_definition = TwineDefinition.new(key)
           current_section.definitions << current_definition
-          
+
           if @options[:tags] && @options[:tags].length > 0
-            current_definition.tags = @options[:tags]            
+            current_definition.tags = @options[:tags]
           end
-          
+
           @twine_file.definitions_by_key[key] = current_definition
           @twine_file.definitions_by_key[key].translations[lang] = value
         else
@@ -63,10 +63,10 @@ module Twine
 
       def set_comment_for_key(key, comment)
         return unless @options[:consume_comments]
-        
+
         if @twine_file.definitions_by_key.include?(key)
           definition = @twine_file.definitions_by_key[key]
-          
+
           reference = @twine_file.definitions_by_key[definition.reference_key] if definition.reference_key
 
           if !reference or comment != reference.raw_comment
