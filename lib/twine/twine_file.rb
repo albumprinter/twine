@@ -141,7 +141,7 @@ module Twine
             if match
               key = match[1].strip
               value = match[2].strip
-              
+
               value = value[1..-2] if value[0] == '`' && value[-1] == '`'
 
               case key
@@ -178,12 +178,17 @@ module Twine
       dev_lang = @language_codes[0]
 
       File.open(path, 'w:UTF-8') do |f|
+
+        @sections.sort!{ |a,b| a.name <=> b.name }
+
         @sections.each do |section|
           if f.pos > 0
             f.puts ''
           end
 
           f.puts "[[#{section.name}]]"
+
+          section.definitions.sort!{ |a,b| a.key <=> b.key }
 
           section.definitions.each do |definition|
             f.puts "\t[#{definition.key}]"
@@ -192,7 +197,7 @@ module Twine
             if !value && !definition.reference_key
               puts "Warning: #{definition.key} does not exist in developer language '#{dev_lang}'"
             end
-            
+
             if definition.reference_key
               f.puts "\t\tref = #{definition.reference_key}"
             end
